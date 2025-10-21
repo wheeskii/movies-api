@@ -1,14 +1,19 @@
 import "reflect-metadata";
 import type { Response, Request } from "express";
-import { appDataSource } from "./data-source"; // adjust path as needed
+import { appDataSource } from "./data-source"; 
 import express from 'express';
+import router from "./routes/movieRoutes";
 
 const app = express();
 const PORT = 8000;
 
+app.use(express.json())
+app.use('/api', router)
+
 app.use('/', (req: Request, res: Response) => {
     res.status(200).json({ message: "Hello World"})
 })
+
 
 appDataSource.initialize()
   .then(() => {
