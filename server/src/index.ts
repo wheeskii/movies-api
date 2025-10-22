@@ -1,23 +1,29 @@
+import "reflect-metadata";
+import type { Response, Request } from "express";
+import { appDataSource } from "./data/data-source"; 
 import express from 'express';
-import { DataSource} from 'typeorm';
+import cors from 'cors';
+import router from "./routes/movieRoutes";
+import genreRouter from "./routes/genreRoutes";
 
-// const app = express();
+const app = express();
+const PORT = 8000;
 
-const appDataSource = new DataSource({
-    type: "mysql",
-    host: "localhost",
-    port: 8000,
-    username: "root",
-    password: "root",
-    database: "user_db",
-    entities: [__dirname + "/../**/*.entity{.ts,.js}"],
+app.use(cors());
+app.use(express.json());
+app.use('/api', router);
+app.use('/api', genreRouter);
 
-})
+// app.use('/', (req: Request, res: Response) => {
+//     res.status(200).json({ message: "Hello World"})
+// })
 
-try {
-    appDataSource.initialize();
-    console.log("Database has been initialized!")
-} catch (error) {
-    console.error("Error during database initialization! ", error)
-}
-
+appDataSource.initialize()
+  .then(() => {
+    console.log("Database connection successful!");
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  })
+  .catch((error) => {
+    console.error("Database connection failed:", error);
+    process.exit(1);
+  });

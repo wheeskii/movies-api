@@ -25,6 +25,9 @@ export class Movie {
     @Column()
     poster!: string;
     
+    @Column({ default: false })
+    isWatched!: boolean;
+    
     @ManyToMany(() => Genre, (genre) => genre.movies, {
         cascade: true,
     })
